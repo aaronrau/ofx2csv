@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using System.IO;
+using System.Globalization;
 
 using ofx2csv.Model;
 
@@ -13,6 +14,8 @@ namespace ofx2csv
     {
         static void Main(string[] args)
         {
+            CultureInfo provider = CultureInfo.InvariantCulture;
+
             if (args.Length == 0)
             {
                 Console.WriteLine("Please enter name and path of OFX file. Example ofx2csv c:\\myaccount.ofx");
@@ -29,8 +32,22 @@ namespace ofx2csv
                 foreach (Transaction trans in document.Transactions)
                 {
                     Console.WriteLine(trans.Name + trans.TransType + trans.TransAmount);
+          
+                    string format = "yyyyMMddHHmmss";
+                    string formattedDate = "";
+                    try
+                    {
+                        DateTime result = DateTime.ParseExact(trans.DatePosted, format, provider);
+                        Console.WriteLine("{0} converts to {1}.", trans.DatePosted, result.ToString());
+                        formattedDate = result.ToString();
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("{0} is not in the correct format.", trans.DatePosted);
+                    }
 
-                    fs.WriteLine(trans.DatePosted+","+trans.Name+","+trans.Memo+","+trans.TransAmount+","+trans.TransType);
+
+                    fs.WriteLine(formattedDate + "," + trans.Name + "," + trans.Memo + "," + trans.TransAmount + "," + trans.TransType);
                 }
             }
 
