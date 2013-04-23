@@ -1,4 +1,4 @@
 ofx2csv
 =======
 
-Convert OFX file to CSV
+Quick Hack to Convert OFX file to CSV
